@@ -29,9 +29,19 @@ import org.springframework.context.annotation.Configuration;
  *  3 JSR250规范 PostConstruct（bean创建完成 属性赋值完成）
  *              ProDestroy（在容器销毁bean之前通知我们进行清理工作）
  *
+ *   populateBean(beanName, mbd, instanceWrapper); 给bean进行属性赋值
+ *  Initialize Bean
+ *  applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);
+ * 遍历得到容器种所有的BeanPostProcessor 挨个执行postProcessBeforeInitialization()方法
+ * 一但返回 null  跳出for循环不会执行后边的
+ * invokeInitMethods(beanName, wrappedBean, mbd);
+ * applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
+ *
  *  4  BeanPostProcessor ： bean的后置处理器
  *         postProcessBeforeInitialization 组件init之前
  *         postProcessAfterInitialization  组件init之后
+ *  Spring 底层对BeanPostProcessor的使用
+ *   bean赋值   注入其他组件 @Autowired 生命周期的注解  ...
  */
 @Configuration
 @ComponentScan("com.zf.bean")

@@ -1,9 +1,29 @@
 package com.zf.bean;
 
-public class Person {
-    private Integer id;
+import org.springframework.beans.factory.annotation.Value;
 
+public class Person {
+    @Value("#{20 - 2}")
+    private Integer id;
+    /**
+     * @Value赋值
+     * 1基本数值
+     * 2 SpEL 表达式 #{ }
+     * 3 ${} 配置文件的值 在运行环境变量的
+     *
+     * */
+    @Value("张三")
     private String name;
+    @Value("${person.nickName}")
+    private  String nickName;
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
 
     public Person() {
     }
@@ -34,6 +54,7 @@ public class Person {
         return "Person{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", nickName='" + nickName + '\'' +
                 '}';
     }
 }
