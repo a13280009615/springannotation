@@ -10,7 +10,14 @@ import org.springframework.context.annotation.PropertySource;
  * @create 2020-08-31 23:11
  */
 @Configuration
-// 使用  读取外部配置文件的 k/v 保存到运行的环境变量中
+/**
+ *
+ * 使用  读取外部配置文件的 k/v 保存到运行的环境变量中
+ *
+ * PropertySources  和 ComponentScans 差不多
+ */
+
+
 @PropertySource({"classpath:/person.properties"})
 public class MainConfigPropertiesValues {
 
