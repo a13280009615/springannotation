@@ -37,6 +37,7 @@ public class LogAspects {
     public void LogAfterReturning(JoinPoint joinPoint, Object result) {
         String name = joinPoint.getSignature().getName();
         System.out.println(name + "运行完成 返回值是" + result);
+        System.out.println("测试提交git");
     }
 
     @AfterThrowing(value = "pointCut()", throwing = "e")
