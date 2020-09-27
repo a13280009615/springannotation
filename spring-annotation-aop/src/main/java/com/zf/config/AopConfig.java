@@ -29,6 +29,39 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
  *
  *   开启基于注解的切面功能  @EnableAspectJAutoProxy
  *     在使用JoinPoint 作为参数的 时候 一定要把他放在 第一个参数 不然就会报错
+ *
+ *
+ *     spring aop 原理
+ *   导入了
+ *     @Import(AspectJAutoProxyRegistrar.class)
+ *    利用 AspectJAutoProxyRegistrar 自定义个容器中注册bean
+ *
+ *   if (registry.containsBeanDefinition("org.springframework.aop.config.internalAutoProxyCreator"))
+ *  internalAutoProxyCreator = AnnotationAwareAspectJAutoProxyCreator
+ *   给容器中注册了一个 自动代理创建器
+ *   父类中 实现了SmartInstantiationAwareBeanPostProcessor, 自动装配了 bean工厂BeanFactoryAware
+ *
+ *   流程
+ *     1创建ioc容器
+ *     2注册配置类  调用refresh() 刷新容器
+ *     3 注册bean 的后置处理器  拦截bean 的创建
+ *        1先获取ioc 容器中已经定义了需要创建对象所有的后置处理器
+ *        2给容器中加了一些别的后置处理器
+ *        3优先注册实现了PriorityOrdered接口的BeanPostProcessor
+ *        4再来注册实现了Ordered接口的BeanPostProcessor
+ *        5注册没有实现优先级接口的BeanPostProcessor
+ *        6先去ioc中拿这个组件 如果ioc容器中没有这个组件 就创建BeanPostProcessor对象并保存在容器中
+ *           1创建bean的实例
+ *           2给属性赋值 populateBean
+ *           3初始化bean  initializeBean
+ *                  1 invokeAwareMethods(); Aware接口的方法回调
+ *                  2 应用后置处理器
+ *                  3 invokeInitMethods 执行自定义初始化方法
+ *                  4 指定后置处理器的
+ *           4BeanPostProcessor(AnnotationAwareAspectJAutoProxyCreator)创建成功
+ *        7 把BeanPostProcessor.addBeanPostProcessor(postProcessor)
+ *
+ * ==============以上是创建和注册AnnotationAwareAspectJAutoProxyCreator的过程=======
  */
 @EnableAspectJAutoProxy
 @Configuration
