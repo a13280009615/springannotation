@@ -36,65 +36,71 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
  *
  *    导入了
  *     @Import(AspectJAutoProxyRegistrar.class)
- *    利用 AspectJAutoProxyRegistrar 自定义个容器中注册bean
+ *    利用 AspectJAutoProxyRegistrar 自定义给容器中注册bean
  *
- *   if (registry.containsBeanDefinition("org.springframework.aop.config.internalAutoProxyCreator"))
- *  internalAutoProxyCreator = AnnotationAwareAspectJAutoProxyCreator
+ *   if (!registry.containsBeanDefinition("org.springframework.aop.config.internalAutoProxyCreator"))
+ *    给容器中定义了一个bean的id为internalAutoProxyCreator =>这个bean为AnnotationAwareAspectJAutoProxyCreator
  *
+ * 这个组件 继承关系 =>代表继承
  *     AnnotationAwareAspectJAutoProxyCreator
  *        ->AspectJAwareAdvisorAutoProxyCreator
  *            ->AbstractAdvisorAutoProxyCreator
  *               ->AbstractAutoProxyCreator  extends ProxyProcessorSupport implements SmartInstantiationAwareBeanPostProcessor, BeanFactoryAware
  *
- *   给容器中注册了一个 自动代理创建器
- *   父类中 实现了SmartInstantiationAwareBeanPostProcessor, 自动装配了 bean工厂BeanFactoryAware
  *
  *   流程
  *     1创建ioc容器
  *     2注册配置类  调用refresh() 刷新容器
- *     3 注册bean 的后置处理器  拦截bean 的创建
- *        1先获取ioc 容器中已经定义了需要创建对象所有的后置处理器
- *        2给容器中加了一些别的后置处理器
+ *       register(annotatedClasses);
+ * 		 refresh();
+ *     3 注册bean 的后置处理器  拦截bean 的创建  registerBeanPostProcessors(beanFactory);
+ *        1先获取ioc 容器中已经定义了的需要创建对象所有的后置处理器
+ *        2给容器中填加了一些别的后置处理器  beanFactory.addBeanPostProcessor()
+ *        在容器中做了一些 PriorityOrdered 和 Ordered 接口的后置处理器的处理
  *        3优先注册实现了PriorityOrdered接口的BeanPostProcessor
  *        4再来注册实现了Ordered接口的BeanPostProcessor
- *        5注册没有实现优先级接口的BeanPostProcessor
+ *        5最后注册没有实现优先级接口的BeanPostProcessor
  *        6先去ioc中拿这个组件 如果ioc容器中没有这个组件 就创建BeanPostProcessor对象并保存在容器中
  *           1创建bean的实例
  *           2给属性赋值 populateBean
  *           3初始化bean  initializeBean
- *                  1 invokeAwareMethods(); Aware接口的方法回调
+ *                  1 invokeAwareMethods(); 处理Aware接口的方法回调
  *                  2 应用后置处理器 applyBeanPostProcessorsBeforeInitialization
  *                  3 invokeInitMethods 执行自定义初始化方法
  *                  4 指定后置处理器的 applyBeanPostProcessorsAfterInitialization
  *           4BeanPostProcessor(AnnotationAwareAspectJAutoProxyCreator)创建成功
+ *           并且创建了aspectJAdvisorsBuilder
  *           this.aspectJAdvisorsBuilder =
  *  * 				new BeanFactoryAspectJAdvisorsBuilderAdapter(beanFactory, this.aspectJAdvisorFactory);
  *        7 把BeanPostProcessor.addBeanPostProcessor(postProcessor)
+ *          beanFactory.addBeanPostProcessor(postProcessor);
  *
  *
- * ==============以上是创建和注册AnnotationAwareAspectJAutoProxyCreator的过程=======
+ * =====以上是创建和注册AnnotationAwareAspectJAutoProxyCreator的过程=======
  *  AnnotationAwareAspectJAutoProxyCreator =>  InstantiationAwareBeanPostProcessor
  *
  *     4 finishBeanFactoryInitialization(beanFactory);完成bean工厂初始化工作创建剩下的单实例bean
  *        1 遍历获取容器中所有的bean 一次创建对象getBean(beanName)
  *          getBean()  -> doGetBean()  ->getSingleton()
  *        2 创建bean
- *          1 先从缓存中获取当前的bean,如果能获取到 说明bean之前是被创建过的 直接使用 否则在创建
+ *          1 先从缓存中获取当前的bean,如果能获取到 说明bean之前是被创建过的直接使用 否则再创建
  *          只要创建好的bean都会被缓存起来
- *          2 createBean() 创建bean  AnnotationAwareAspectJAutoProxyCreator会在任何对象之前先尝试返回bean 的实例
- *           BeanPostProcessor 是bean 对象创建完成完成初始化前后调用的
- *           InstantiationAwareBeanPostProcessor是在创建bean实例之前先尝试用后置处理器返回对象
+ *          2 createBean() 创建bean 【 AnnotationAwareAspectJAutoProxyCreator会在任何对象之前先尝试返回bean的实例】
+ *           【BeanPostProcessor 是bean 对象创建完成完成初始化前后调用的】
+ *           【InstantiationAwareBeanPostProcessor是在创建bean实例之前先尝试用后置处理器返回对象】
  *
  *            1 Object bean = resolveBeforeInstantiation(beanName, mbdToUse);
- *              希望后置处理器在此能返回一个代理对象如果能返回就使用代理对象如果不能就继续
+ *              希望后置处理器在此能返回一个代理对象如果能返回就使用代理对象如果不能就继续创建bean 第二步
+ *
+ *                后置处理器先尝试返回对象
  *               bean = applyBeanPostProcessorsBeforeInstantiation(targetType, beanName);
- *                 如果这个后置处理器是InstantiationAwareBeanPostProcessor 类型的
- *                 执行postProcessBeforeInstantiation()方法
+ *                 如果这个后置处理器是InstantiationAwareBeanPostProcessor 类型的执行
+ *                  postProcessBeforeInstantiation()方法
  * 					if (bean != null) {
  * 						bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
  * 						}
- * 					后置处理器先尝试返回对象
- *            2  doCreateBean  这才是真正的去创建一个bean实例 和 3.6流程一样
+ *
+ *            2  doCreateBean  doCreateBean(beanName, mbdToUse, args);  这才是真正的去创建一个bean实例 和 3.6流程一样
  *
  *
  */
