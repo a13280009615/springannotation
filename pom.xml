@@ -13,6 +13,8 @@
         <module>spring-annotation-autowired</module>
         <module>spring-annotation-profile</module>
         <module>spring-annotation-aop</module>
+        <module>spring-annotation-tx</module>
+        <module>spring-annotation-extension</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -29,6 +31,22 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-aspects</artifactId>
                 <version>4.3.12.RELEASE</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-jdbc</artifactId>
+                <version>4.3.12.RELEASE</version>
+            </dependency>
+            <dependency>
+                <groupId>c3p0</groupId>
+                <artifactId>c3p0</artifactId>
+                <version>0.9.1.2</version>
+            </dependency>
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>5.1.47</version>
             </dependency>
 
             <dependency>
