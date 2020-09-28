@@ -40,7 +40,7 @@ import org.springframework.context.annotation.Primary;
  *
  *  4自定义组件想要使用Spring 容器底层的一些组件 只需要让自定义组件实现 XXXAware接口
  *  在创建对象的时候 会调用接口规定的方法注入相关的组件
- *  没一个 XXXAware都有 一个 XXXAwareProcessor
+ *  每一个 XXXAware都有 一个 XXXAwareProcessor
  */
 @Configuration
 @ComponentScan("com.zf")

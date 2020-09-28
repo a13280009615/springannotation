@@ -86,7 +86,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
  *          1 先从缓存中获取当前的bean,如果能获取到 说明bean之前是被创建过的直接使用 否则再创建
  *          只要创建好的bean都会被缓存起来
  *          2 createBean() 创建bean 【 AnnotationAwareAspectJAutoProxyCreator会在任何对象之前先尝试返回bean的实例】
- *           【BeanPostProcessor 是bean 对象创建完成完成初始化前后调用的】
+ *           【BeanPostProcessor 是bean 对象创建完成初始化前后调用的】
  *           【InstantiationAwareBeanPostProcessor是在创建bean实例之前先尝试用后置处理器返回对象】
  *
  *            1 Object bean = resolveBeforeInstantiation(beanName, mbdToUse);

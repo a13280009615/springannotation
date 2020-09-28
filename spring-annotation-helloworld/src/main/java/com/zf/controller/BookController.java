@@ -1,4 +1,4 @@
-package com.zf.conreoller;
+package com.zf.controller;
 
 import org.springframework.stereotype.Controller;
 
@@ -7,5 +7,5 @@ import org.springframework.stereotype.Controller;
  * @create 2020-09-26 下午5:22
  */
 @Controller
-public class BookConreoller {
+public class BookController {
 }
