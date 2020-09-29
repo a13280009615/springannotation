@@ -15,6 +15,7 @@
         <module>spring-annotation-aop</module>
         <module>spring-annotation-tx</module>
         <module>spring-annotation-extension</module>
+        <module>springannotation-ioc</module>
     </modules>
     <packaging>pom</packaging>
 
