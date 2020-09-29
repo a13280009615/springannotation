@@ -1,0 +1,25 @@
+web 容器咋已启动的时候 会扫描jar报下的META-INF/services/SpringServletContainerInitializer
+org.springframework.web.SpringServletContainerInitializer
+加载这个文件指定的类 SpringServletContainerInitializer
+spring应用一启动会加载感兴趣的 WebApplicationInitializer.class接口下的所有组件
+并且为WebApplicationInitializer组件创建对象(前期是这个组件不是接口 不是抽象类)
+  AbstractContextLoaderInitializer => WebApplicationContext rootAppContext = createRootApplicationContext();
+  AbstractDispatcherServletInitializer
+   => WebApplicationContext servletAppContext = createServletApplicationContext();
+   => FrameworkServlet dispatcherServlet = createDispatcherServlet(servletAppContext);
+   => 将创建好的dispatcherServlet添加到servletAppContext中
+       => getServletMappings();让子类实现
+  AbstractAnnotationConfigDispatcherServletInitializer
+    创建根容器 createRootApplicationContext 通过配置类的方法
+    创建web的ioc容器 createServletApplicationContext()
+      getServletConfigClasses();  获取配置类
+
+
+总结:
+   以注解方式来启动SpringMVC 实现 AbstractAnnotationConfigDispatcherServletInitializer 实现抽象方法
+   指定DispatcherServlet的配置信息
+
+=============定制化 mvc 配置===================
+    实现 WebMvcConfigurer 接口  或者 继承 WebMvcConfigurerAdapter
+
+@EnableWebMvc  开启 springMVC的配置功能
