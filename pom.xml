@@ -15,7 +15,7 @@
         <module>spring-annotation-aop</module>
         <module>spring-annotation-tx</module>
         <module>spring-annotation-extension</module>
-        <module>springannotation-ioc</module>
+        <module>spring-annotation-ioc</module>
         <module>servlet3.0</module>
         <module>spring-annotation-mvc</module>
     </modules>
@@ -55,14 +55,6 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-webmvc</artifactId>
                 <version>4.3.12.RELEASE</version>
-            </dependency>
-
-
-            <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>javax.servlet-api</artifactId>
-                <version>3.1.0</version>
-                <scope>provided</scope>
             </dependency>
 
 
